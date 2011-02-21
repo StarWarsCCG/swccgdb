@@ -10,8 +10,6 @@ public class DatabaseController
 {
     DatabaseController()
     {
-	// test
-	System.out.println("Hello");
     }
 
     private Connection openConnection() throws Exception
