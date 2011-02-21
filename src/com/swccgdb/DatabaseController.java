@@ -12,13 +12,19 @@ public class DatabaseController
     {
     }
 
+    /**
+     * This opens the database connection to swccg_db.sqlite
+     * 
+     * @return
+     * @throws Exception
+     */
     private Connection openConnection() throws Exception
     {
 	Class.forName("org.sqlite.JDBC");
 	return DriverManager.getConnection("jdbc:sqlite:swccg_db.sqlite");
     }
     
-    private static void createDB()
+/*    private static void createDB()
     {
 	Connection conn2 = null;
 	try
@@ -50,65 +56,158 @@ public class DatabaseController
     {
 	createDB();
     }
-    
-    public java.awt.List getFilteredList(String[] args)
+*/    
+    /**
+     * This function returns a java.awt.List containing all of the
+     * cards that match the filters.
+     * 
+     * String[] - number of items expected = ?
+     * 
+     * @param filters - an array containing all of the possible filter terms
+     */
+    public java.awt.List getFilteredList(String[] filters)
     {
 	
 	
 	return null;
     }
     
-    public void updateInventory(String cardname)
+    /**
+     * This function is used to change the number in the users inventory 
+     * of a particular card.
+     * 
+     * @param cardname
+     * @param num
+     */
+    public void updateInventory(String cardname, int num)
     {
 	
     }
     
+    /**
+     * This function returns an integer representing the number of cards
+     * a user has in his inventory.
+     * 
+     * @param cardname
+     * @return int
+     */
     public int getInventory(String cardname)
     {
 	return 0;
     }
     
+    /**
+     * This funtion returns an int representing the number of cards
+     * the user needs.
+     * 
+     * @param cardname
+     * @return int
+     */
     public int getNeeds(String cardname)
     {
 	return 0;
     }
     
-    public void updateNeeds(String cardname)
+    /**
+     * This updates the needs field with the provided int
+     * 
+     * @param cardname
+     * @param num
+     */
+    public void updateNeeds(String cardname, int num)
     {
 	
     }
     
+    /**
+     * return an array of Strings with each of the fields for the card information
+     * (Destiny, lore, gametext, etc.
+     * 
+     * String[] - number of items expected = ?
+     * 
+     * @param cardname
+     * @return
+     */
     public String[] getCardInfo(String cardname)
     {
 	
 	return null;
     }
     
+    /**
+     * returns an array of Strings with the extras (cards pulled, pulls, rules, etc.)
+     * 
+     * String[] - number of items expected = ?
+     * 
+     * @param cardname
+     * @return
+     */
     public String[] getCardExtras(String cardname)
     {
 	return null;
     }
     
-    public int updateCardExtras(String cardname)
+    /**
+     * Updates the extras for each card.
+     * 
+     * String[] - number of items expected = ?
+     * 
+     * @param cardname
+     * @param values
+     * @return
+     */
+    public int updateCardExtras(String cardname, String[] values)
     {
 	return 0;
     }
     
-    public int updateCardInfo(String cardname)
+    /**
+     * Updates the database with the information in values
+     * 
+     * String[] - number of items expected = ?
+     * 
+     * @param cardname
+     * @param values
+     * @return
+     */
+    public int updateCardInfo(String cardname, String[] values)
     {
 	return 0;
     }
     
+    /**
+     * Allocates a new row for a card. It should assign an id, and all of the
+     * information in info to that card
+     * 
+     * @param cardname
+     * @param info
+     * @return
+     */
     public int addCard(String cardname,String[] info)
     {
 	return 0;
     }
     
+    /**
+     * Removes an entry from the database. Should this remove the id as well?
+     * 
+     * @param cardname
+     * @return
+     */
     public int removeCard(String cardname)
     {
 	return 0;
     }
     
+    /**
+     * returns a list of all card names. could be optimized to remove it from java.awt.List, but
+     * I dont want to have to loop through all of them twice. Is there a better way?
+     * 
+     * note, need to change execute query to prepared statement for security reasons
+     * 
+     * @param cardname
+     * @return
+     */
     public java.awt.List getCardNames(String cardname)
     {
 	Connection conn =  null;
@@ -121,7 +220,7 @@ public class DatabaseController
 	    conn = openConnection();
 	    Statement stat = conn.createStatement();
 	    
-	    rs = stat.executeQuery("select cardname from SWD order by cardname asc;");
+	    rs = stat.executeQuery("select cardname from SWD where cardname like \"%" + cardname + "%\" order by cardname asc;");
 	    results = new java.awt.List();
 	    while(rs.next())
 	    {
