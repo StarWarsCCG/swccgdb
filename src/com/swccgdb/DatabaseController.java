@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseController
 {
@@ -216,12 +218,12 @@ public class DatabaseController
      * @param cardname
      * @return
      */
-    public java.awt.List getCardNames(String cardname)
+    public List<String> getCardNames(String cardname)
     {
 	Connection conn =  null;
 	ResultSet rs = null;
 	
-	java.awt.List results = null;
+	List<String> results = new ArrayList<String>();
 	
 	try
 	{
@@ -229,11 +231,10 @@ public class DatabaseController
 	    Statement stat = conn.createStatement();
 	    
 	    rs = stat.executeQuery("select cardname from SWD where cardname like \"%" + cardname + "%\" order by cardname asc;");
-	    results = new java.awt.List();
+
 	    while(rs.next())
 	    {
 		String item = rs.getString("cardname");
-		System.out.println(item);
 		results.add(item);
 	    }
 	}
@@ -253,7 +254,6 @@ public class DatabaseController
 		e.printStackTrace();
 	    }
 	}
-	
 	return results;
     }
 }

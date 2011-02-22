@@ -3,10 +3,12 @@ package com.swccgdb;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.AbstractListModel;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -14,19 +16,24 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.JMenuItem;
-import java.awt.Font;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class MainWindow
 {
@@ -39,6 +46,9 @@ public class MainWindow
     private JTextField	 textFieldCounterpart;
 
     private DatabaseController dbc;
+    private JList	      listCardList;
+    private CardListModel      cardListModel;
+    private JLabel	     lblNumCards;
 
     /**
      * Launch the application.
@@ -68,6 +78,7 @@ public class MainWindow
     public MainWindow()
     {
 	dbc = new DatabaseController();
+	cardListModel = new CardListModel(dbc);
 	initialize();
     }
 
@@ -77,10 +88,10 @@ public class MainWindow
     private void initialize()
     {
 	frmswipStarWars = new JFrame();
+	frmswipStarWars.setResizable(false);
 	frmswipStarWars
 		.setTitle("[sw-ip] Star Wars: CCG Information Pool - Java\n");
-	//frmswipStarWars.setResizable(false);
-	frmswipStarWars.setBounds(100, 100, 995, 699);
+	frmswipStarWars.setBounds(100, 100, 1016, 732);
 	frmswipStarWars.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	JMenuBar menuBar = new JMenuBar();
@@ -115,29 +126,17 @@ public class MainWindow
 	mnHelp.add(mntmInfo);
 	frmswipStarWars.getContentPane().setLayout(null);
 
-	JLabel lblNumCards = new JLabel("0 Cards");
-	lblNumCards.setBounds(209, 6, 61, 16);
+	lblNumCards = new JLabel("0 Cards");
+	lblNumCards.setHorizontalAlignment(SwingConstants.TRAILING);
+	lblNumCards.setBounds(251, 6, 91, 16);
 	frmswipStarWars.getContentPane().add(lblNumCards);
-
-	JPanel panel = new JPanel();
-	panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null,
-		null));
-	panel.setBounds(10, 28, 260, 276);
-	frmswipStarWars.getContentPane().add(panel);
-	panel.setLayout(null);
-
-	List listCardList = dbc.getCardNames("");// new List();
-	listCardList.setMultipleMode(false);
-	listCardList.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
-	listCardList.setBounds(0, 0, 260, 276);
-	panel.add(listCardList);
-	// listCardList.setForeground(UIManager.getColor("List.background"));
 
 	JPanel panelCardDetails = new JPanel();
 	panelCardDetails.setBorder(new BevelBorder(BevelBorder.LOWERED, null,
 		null, null, null));
-	panelCardDetails.setBounds(276, 28, 315, 276);
+	panelCardDetails.setBounds(354, 28, 237, 276);
 	frmswipStarWars.getContentPane().add(panelCardDetails);
+	panelCardDetails.setLayout(new BorderLayout(0, 0));
 
 	JPanel panelFilter = new JPanel();
 	panelFilter.setBorder(new TitledBorder(null, "Filter",
@@ -177,11 +176,10 @@ public class MainWindow
 		null, null));
 	panel_8.setBounds(6, 102, 136, 91);
 	panelFilter.add(panel_8);
-	panel_8.setLayout(null);
+	panel_8.setLayout(new BorderLayout(0, 0));
 
-	List listFilter = new List();
-	listFilter.setBounds(0, 0, 136, 91);
-	panel_8.add(listFilter);
+	JList listFilterList = new JList();
+	panel_8.add(listFilterList, BorderLayout.CENTER);
 
 	JButton btnRemove = new JButton("Remove");
 	btnRemove.setEnabled(false);
@@ -426,16 +424,15 @@ public class MainWindow
 
 	final JButton btnAddCard = new JButton("+");
 	btnAddCard.setVisible(false);
-	btnAddCard.setBounds(26, 1, 44, 29);
+	btnAddCard.setBounds(23, 4, 41, 21);
 	frmswipStarWars.getContentPane().add(btnAddCard);
 
 	final JButton btnRemoveCard = new JButton("-");
 	btnRemoveCard.setVisible(false);
-	btnRemoveCard.setBounds(82, 1, 44, 29);
+	btnRemoveCard.setBounds(76, 4, 41, 21);
 	frmswipStarWars.getContentPane().add(btnRemoveCard);
 
 	final JCheckBox chckbxFieldsEditable = new JCheckBox("Fields Editable");
-	//chckbxFieldsEditable.setEnabled(false);
 	chckbxFieldsEditable.addActionListener(new ActionListener()
 	{
 	    public void actionPerformed(ActionEvent e)
@@ -536,5 +533,60 @@ public class MainWindow
 	    }
 	});
 	panel_7.add(chckbxFieldsEditable, BorderLayout.CENTER);
+
+	JScrollPane scrollPane = new JScrollPane();
+	scrollPane.setBounds(10, 28, 332, 276);
+	frmswipStarWars.getContentPane().add(scrollPane);
+
+	listCardList = new JList();
+	listCardList.addListSelectionListener(new ListSelectionListener()
+	{
+	    public void valueChanged(ListSelectionEvent arg0)
+	    {
+		//String name = cardListModel.getCardName(listCardList.getSelectedIndex());
+	    }
+	});
+	scrollPane.setViewportView(listCardList);
+	listCardList.setVisibleRowCount(14);
+	listCardList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	listCardList.setModel(cardListModel);
+	this.lblNumCards.setText(cardListModel.getSize() + " Cards");
+    }
+}
+
+@SuppressWarnings("serial")
+class CardListModel extends AbstractListModel
+{
+    List<String>       values = new ArrayList<String>();
+    DatabaseController dbc;
+
+    CardListModel(DatabaseController dbc)
+    {
+	this.dbc = dbc;
+	updateModel("");
+    }
+
+    @Override
+    public Object getElementAt(int index)
+    {
+	return values.get(index);
+    }
+    
+    public String getCardName(int index)
+    {
+	return values.get(index);
+    }
+
+    @Override
+    public int getSize()
+    {
+	return values.size();
+    }
+
+    public int updateModel(String keyterm)
+    {
+	values.clear();
+	values = dbc.getCardNames(keyterm);
+	return getSize();
     }
 }
