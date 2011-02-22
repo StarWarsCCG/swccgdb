@@ -200,6 +200,14 @@ public class DatabaseController
     }
     
     /**
+     * This function is to export a deck to a holotable formatted file
+     */
+    public void exportToHolotable(String deck, String path)
+    {
+	
+    }
+    
+    /**
      * returns a list of all card names. could be optimized to remove it from java.awt.List, but
      * I dont want to have to loop through all of them twice. Is there a better way?
      * 
