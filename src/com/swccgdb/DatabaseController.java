@@ -95,6 +95,7 @@ public class DatabaseController
      */
     public int getInventory(String cardname)
     {
+	
 	return 0;
     }
     
@@ -130,11 +131,285 @@ public class DatabaseController
      * @param cardname
      * @return
      */
-    public String[] getCardInfo(String cardname)
+    public String getCardInfo(String cardname)
     {
+	Connection conn =  null;
+	ResultSet rs = null;
 	
-	return null;
+	String result = null;
+	
+	try
+	{
+	    conn = openConnection();
+	    Statement stat = conn.createStatement();
+	    
+	    rs = stat.executeQuery("select * from SWD where cardname = \"" + cardname + "\";");
+
+	    String uniqueness = rs.getString("uniqueness");
+	    String name = rs.getString("cardname");
+	    String grouping = rs.getString("grouping");
+	    String cardtype = rs.getString("cardtype");
+	    String subtype = rs.getString("subtype");
+	    String modeltype = rs.getString("modeltype");
+	    String expansion = rs.getString("expansion");
+	    String destiny = rs.getString("destiny");
+	    String power = rs.getString("power");
+	    String ferocity = rs.getString("ferocity");
+	    String creaturedv = rs.getString("creaturedefensevalue");
+	    String creaturedvname = rs.getString("creaturedefensevaluename");
+	    String objectivefront = rs.getString("objectivefront");
+	    String objectiveback = rs.getString("objectiveback");
+	    String objectivefrontname = rs.getString("objectivefrontname");
+	    String objectivebackname = rs.getString("objectivebackname");
+	    String deploy = rs.getString("deploy");
+	    String forfeit = rs.getString("forfeit");
+	    String armor = rs.getString("armor");
+	    String ability = rs.getString("ability");
+	    String hyperspeed = rs.getString("hyperspeed");
+	    String landspeed = rs.getString("landspeed");
+	    String politics = rs.getString("politics");
+	    String maneuver = rs.getString("maneuver");
+	    String forceapt = rs.getString("forceaptitude");
+	    String lore = rs.getString("lore");
+	    String gametext = rs.getString("gametext");
+	    String jeditestnumber = rs.getString("jeditestnumber");
+	    String lsicons = rs.getString("lightsideicons");
+	    String dsicons = rs.getString("darksideicons");
+	    String lstext = rs.getString("lightsidetext");
+	    String dstext = rs.getString("darksidetext");
+	    String parsec = rs.getString("parsec");
+	    String icons = rs.getString("icons");
+
+	
+	    if(cardtype.equals("Character"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    lore + "\n\n" + 
+		    grouping + "\n" +
+		    cardtype + " - " + subtype + "\n" +
+		    "Icons: " + icons + "\n" +
+		    "Power: " + power + " Ability: " + ability + " Armor: " + armor + "\n" + 
+		    "Deploy: " + deploy + " Forfeit: " + forfeit + "\n\n" +
+		    gametext;
+		
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Effect"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    lore + "\n\n" + 
+		    grouping + "\n" +
+		    cardtype + " - " + subtype + "\n" +
+		    "Icons: " + icons + "\n\n" +
+		    gametext;
+		
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Interrupt"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    lore + "\n\n" + 
+		    grouping + "\n" +
+		    cardtype + " - " + subtype + "\n" +
+		    "Icons: " + icons + "\n\n" +
+		    gametext;
+		
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Defensive Shield"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    lore + "\n\n" + 
+		    grouping + "\n" +
+		    cardtype + " - " + subtype + "\n" +
+		    "Icons: " + icons + "\n\n" +
+		    gametext;
+		
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Admiral's Order"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    grouping + "\n" +
+		    cardtype + " - " + subtype + "\n" +
+		    "Icons: " + icons + "\n\n" +
+		    gametext;
+		
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Jedi Test"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    grouping + "\n" +
+		    cardtype + " - " + jeditestnumber + "\n" +
+		    "Icons: " + icons + "\n\n" +
+		    gametext;
+		
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Creature"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    lore + "\n\n" + 
+		    grouping + "\n" +
+		    cardtype + "\n" +
+		    "Icons: " + icons + "\n" +
+		    "Ferocity: " + ferocity + " " + creaturedvname + ": " + creaturedv + "\n\n" +
+		    gametext;
+		
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Device"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    lore + "\n\n" + 
+		    grouping + "\n" +
+		    cardtype + " - " + subtype + "\n" +
+		    "Icons: " + icons + "\n\n" +
+		    gametext;
+		
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Epic Event"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    grouping + "\n" +
+		    cardtype + " - " + subtype + "\n" +
+		    "Icons: " + icons + "\n\n" +
+		    gametext;
+		
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Podracer"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    lore + "\n\n" + 
+		    grouping + "\n" +
+		    cardtype + "\n" +
+		    "Icons: " + icons + "\n\n" +
+		    gametext;
+		
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Weapon"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    lore + "\n\n" + 
+		    grouping + "\n" +
+		    cardtype + " - " + subtype + "\n" +
+		    "Icons: " + icons + "\n";
+		if(!deploy.equals(""))
+		    result += "Deploy: " + deploy + " Forfeit: " + forfeit + "\n\n";
+
+		result += "\n" + gametext;
+		
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Starship"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    lore + "\n\n" + 
+		    grouping + "\n" +
+		    cardtype + " - " + modeltype + "\n" +
+		    "Icons: " + icons + "\n" +
+		    "Power: " + power;
+		
+		if(subtype.equals("Capital"))
+		    result += " Armor: " + armor + " Hyperspeed: " + hyperspeed;
+		else
+		    result += " Maneuver: " + maneuver + " Hyperspeed: " + hyperspeed;
+		
+		result += "\n\n" + gametext;
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Vehicle"))
+	    {
+		result = 
+		    uniqueness + name + "\t" + destiny + "\n" +
+		    lore + "\n\n" + 
+		    grouping + "\n" +
+		    cardtype + " - " + subtype + " - " + modeltype + "\n" +
+		    "Icons: " + icons + "\n" +
+		    "Power: " + power;
+		
+		if(!armor.equals(""))
+		    result += " Armor: " + armor + " Landspeed: " + landspeed;
+		else
+		    result += " Maneuver: " + maneuver + " Landspeed: " + landspeed;
+		
+		result += "\n\n" + gametext;
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Objective"))
+	    {
+		result = 
+		    objectivefrontname + " / " + objectivebackname + "\n" +
+		    grouping + "\n" + 
+		    "Icons: " + icons + "\n\n" + 
+		    gametext;
+		return result;
+	    }
+	    
+	    if(cardtype.equals("Location"))
+	    {
+		result = 
+		    uniqueness + name + "\n" + 
+		    grouping + "\n" + 
+		    "Icons: " + icons + "\n\n" + 
+		    "[Light] " + lsicons + "\n" +
+		    lstext + "\n\n" + 
+		    "[Dark] " + dsicons + "\n" +
+		    dstext;
+		    
+		    
+		return result;
+	    }
+	}
+	catch(Exception e)
+	{
+	    e.printStackTrace();
+	}
+	finally
+	{
+	    try
+	    {
+		rs.close();
+		conn.close();
+	    }
+	    catch (SQLException e)
+	    {
+		e.printStackTrace();
+	    }
+	}
+	return result;
     }
+    
+    
     
     /**
      * returns an array of Strings with the extras (cards pulled, pulls, rules, etc.)
@@ -146,7 +421,53 @@ public class DatabaseController
      */
     public String[] getCardExtras(String cardname)
     {
-	return null;
+	Connection conn =  null;
+	ResultSet rs = null;
+	
+	String[] result = null;
+	
+	try
+	{
+	    conn = openConnection();
+	    Statement stat = conn.createStatement();
+	    
+	    rs = stat.executeQuery("select * from SWD where cardname = \"" + cardname + "\";");
+
+	    result = new String[14];
+	    result[0] = rs.getString("expansion");
+	    result[1] = rs.getString("rarity");
+	    result[2] = rs.getString("abbreviation");
+	    result[3] = rs.getString("counterpart");
+	    result[4] = rs.getString("pulls");
+	    result[5] = rs.getString("ispulled");
+	    result[6] = rs.getString("information");
+	    result[7] = rs.getString("characteristics");
+	    result[8] = rs.getString("combo");
+	    result[9] = rs.getString("rules");
+	    result[10] = rs.getString("cancels");
+	    result[11] = rs.getString("iscanceledby");
+	    result[12] = rs.getString("matching");
+	    result[13] = rs.getString("matchingweapon");
+	    
+	    
+	}
+	catch(Exception e)
+	{
+	    e.printStackTrace();
+	}
+	finally
+	{
+	    try
+	    {
+		rs.close();
+		conn.close();
+	    }
+	    catch (SQLException e)
+	    {
+		e.printStackTrace();
+	    }
+	}
+	return result;
     }
     
     /**
