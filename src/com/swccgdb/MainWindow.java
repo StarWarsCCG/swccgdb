@@ -90,7 +90,7 @@ public class MainWindow
     private void initialize()
     {
 	frmswipStarWars = new JFrame();
-	frmswipStarWars.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\andrewnelson\\Desktop\\imperial.png"));
+	frmswipStarWars.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/com/swccgdb/resources/imperial.png")));
 	frmswipStarWars.setResizable(false);
 	frmswipStarWars
 		.setTitle("[sw-ip] Star Wars: CCG Information Pool - Java\n");
