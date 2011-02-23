@@ -35,6 +35,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.JEditorPane;
+import java.awt.Toolkit;
 
 public class MainWindow
 {
@@ -89,6 +90,7 @@ public class MainWindow
     private void initialize()
     {
 	frmswipStarWars = new JFrame();
+	frmswipStarWars.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\andrewnelson\\Desktop\\imperial.png"));
 	frmswipStarWars.setResizable(false);
 	frmswipStarWars
 		.setTitle("[sw-ip] Star Wars: CCG Information Pool - Java\n");
