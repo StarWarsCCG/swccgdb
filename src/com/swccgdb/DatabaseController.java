@@ -2,6 +2,7 @@ package com.swccgdb;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -23,7 +24,9 @@ public class DatabaseController
     private Connection openConnection() throws Exception
     {
 	Class.forName("org.sqlite.JDBC");
-	return DriverManager.getConnection("jdbc:sqlite:swccg_db.sqlite");
+	Connection tmp = DriverManager.getConnection("jdbc:sqlite:swccg_db.sqlite");
+	tmp.setAutoCommit(false);
+	return tmp;
     }
     
 /*    private static void createDB()
@@ -133,25 +136,25 @@ public class DatabaseController
      */
     public String getCardInfo(String cardname)
     {
+	System.out.println(cardname);
 	Connection conn =  null;
 	ResultSet rs = null;
-	
 	String result = null;
 	
 	try
 	{
 	    conn = openConnection();
-	    Statement stat = conn.createStatement();
+	    String stmt = "select * from swd where cardname = ?";
+	    PreparedStatement ps = conn.prepareStatement(stmt);
+	    ps.setString(1,cardname);
+	    rs = ps.executeQuery();
 	    
-	    rs = stat.executeQuery("select * from SWD where cardname = \"" + cardname + "\";");
-
 	    String uniqueness = rs.getString("uniqueness");
 	    String name = rs.getString("cardname");
 	    String grouping = rs.getString("grouping");
 	    String cardtype = rs.getString("cardtype");
 	    String subtype = rs.getString("subtype");
 	    String modeltype = rs.getString("modeltype");
-	    String expansion = rs.getString("expansion");
 	    String destiny = rs.getString("destiny");
 	    String power = rs.getString("power");
 	    String ferocity = rs.getString("ferocity");
@@ -180,7 +183,6 @@ public class DatabaseController
 	    String parsec = rs.getString("parsec");
 	    String icons = rs.getString("icons");
 
-	
 	    if(cardtype.equals("Character"))
 	    {
 		result = 
@@ -423,15 +425,15 @@ public class DatabaseController
     {
 	Connection conn =  null;
 	ResultSet rs = null;
-	
 	String[] result = null;
 	
 	try
 	{
 	    conn = openConnection();
-	    Statement stat = conn.createStatement();
-	    
-	    rs = stat.executeQuery("select * from SWD where cardname = \"" + cardname + "\";");
+	    String stmt = "select * from SWD where cardname = ?";
+	    PreparedStatement ps = conn.prepareStatement(stmt);
+	    ps.setString(1, cardname);
+	    rs = ps.executeQuery();
 
 	    result = new String[14];
 	    result[0] = rs.getString("expansion");
@@ -448,7 +450,6 @@ public class DatabaseController
 	    result[11] = rs.getString("iscanceledby");
 	    result[12] = rs.getString("matching");
 	    result[13] = rs.getString("matchingweapon");
-	    
 	    
 	}
 	catch(Exception e)
@@ -549,9 +550,9 @@ public class DatabaseController
 	try
 	{
 	    conn = openConnection();
-	    Statement stat = conn.createStatement();
-	    
-	    rs = stat.executeQuery("select cardname from SWD where cardname like \"%" + cardname + "%\" order by cardname asc;");
+	    String stmt = "select cardname from SWD order by cardname asc;";
+	    PreparedStatement ps = conn.prepareStatement(stmt);
+	    rs = ps.executeQuery();
 
 	    while(rs.next())
 	    {
