@@ -3,6 +3,8 @@ package com.swccgdb;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -35,7 +37,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.JEditorPane;
-import java.awt.Toolkit;
 
 public class MainWindow
 {
@@ -51,6 +52,10 @@ public class MainWindow
     private JList	      listCardList;
     private CardListModel      cardListModel;
     private JLabel	     lblNumCards;
+    
+    private Font	stdFont;
+    private Font	smlFont;
+    private Font	bldFont;
 
     /**
      * Launch the application.
@@ -81,6 +86,9 @@ public class MainWindow
     {
 	dbc = new DatabaseController();
 	cardListModel = new CardListModel(dbc);
+	stdFont = new Font("Tahoma", Font.PLAIN, 12);
+	smlFont = new Font("Tahoma", Font.PLAIN, 10);
+	bldFont = new Font("Tahoma", Font.BOLD, 12);
 	initialize();
     }
 
@@ -145,8 +153,9 @@ public class MainWindow
 	panelCardDetails.add(scrollPane_11, BorderLayout.CENTER);
 	
 	final JTextArea dtrpnCarginfo = new JTextArea();
-	dtrpnCarginfo.setWrapStyleWord(true);
 	dtrpnCarginfo.setLineWrap(true);
+	dtrpnCarginfo.setWrapStyleWord(true);
+	dtrpnCarginfo.setFont(stdFont);
 	scrollPane_11.setViewportView(dtrpnCarginfo);
 
 	JPanel panelFilter = new JPanel();
@@ -267,6 +276,7 @@ public class MainWindow
 	panelCardHelp.add(lblNickname);
 
 	textFieldNickname = new JTextField();
+	textFieldNickname.setFont(stdFont);
 	textFieldNickname.setBackground(UIManager.getColor("control"));
 	textFieldNickname.setEditable(false);
 	textFieldNickname.setBounds(6, 32, 217, 22);
@@ -278,6 +288,7 @@ public class MainWindow
 	panelCardHelp.add(lblCounterpart);
 
 	textFieldCounterpart = new JTextField();
+	textFieldCounterpart.setFont(stdFont);
 	textFieldCounterpart.setEditable(false);
 	textFieldCounterpart.setBounds(6, 74, 217, 22);
 	panelCardHelp.add(textFieldCounterpart);
@@ -299,6 +310,7 @@ public class MainWindow
 	panelPulling.add(scrollPane_2);
 
 	final JTextArea txtrPulls = new JTextArea();
+	txtrPulls.setFont(stdFont);
 	scrollPane_2.setViewportView(txtrPulls);
 	txtrPulls.setBackground(UIManager.getColor("control"));
 	txtrPulls.setWrapStyleWord(true);
@@ -314,6 +326,7 @@ public class MainWindow
 	panelPulling.add(scrollPane_3);
 
 	final JTextArea txtrPulledBy = new JTextArea();
+	txtrPulledBy.setFont(stdFont);
 	scrollPane_3.setViewportView(txtrPulledBy);
 	txtrPulledBy.setBackground(UIManager.getColor("control"));
 	txtrPulledBy.setWrapStyleWord(true);
@@ -330,7 +343,10 @@ public class MainWindow
 	JScrollPane scrollPane_1 = new JScrollPane();
 	panel_1.add(scrollPane_1);
 
-	final JTextPane txtpnCardinfo = new JTextPane();
+	final JTextArea txtpnCardinfo = new JTextArea();
+	txtpnCardinfo.setLineWrap(true);
+	txtpnCardinfo.setWrapStyleWord(true);
+	txtpnCardinfo.setFont(stdFont);
 	scrollPane_1.setViewportView(txtpnCardinfo);
 	txtpnCardinfo.setBackground(UIManager.getColor("control"));
 	txtpnCardinfo.setEditable(false);
@@ -345,12 +361,11 @@ public class MainWindow
 	JScrollPane scrollPane_4 = new JScrollPane();
 	panel_2.add(scrollPane_4);
 
-	final JTextArea txtrCharacteristics = new JTextArea();
+	final JEditorPane txtrCharacteristics = new JEditorPane();
+	txtrCharacteristics.setFont(bldFont);
 	scrollPane_4.setViewportView(txtrCharacteristics);
 	txtrCharacteristics.setEditable(false);
 	txtrCharacteristics.setBackground(UIManager.getColor("control"));
-	txtrCharacteristics.setWrapStyleWord(true);
-	txtrCharacteristics.setLineWrap(true);
 
 	JPanel panel_3 = new JPanel();
 	panel_3.setBorder(new TitledBorder(null, "Combo", TitledBorder.LEADING,
@@ -363,6 +378,7 @@ public class MainWindow
 	panel_3.add(scrollPane_10, BorderLayout.CENTER);
 	
 		final JTextArea txtrCombo = new JTextArea();
+		txtrCombo.setFont(stdFont);
 		scrollPane_10.setViewportView(txtrCombo);
 		txtrCombo.setLineWrap(true);
 		txtrCombo.setBackground(UIManager.getColor("control"));
@@ -380,6 +396,7 @@ public class MainWindow
 	panel_4.add(scrollPane_5);
 
 	final JTextArea txtrRules = new JTextArea();
+	txtrRules.setFont(stdFont);
 	txtrRules.setLineWrap(true);
 	scrollPane_5.setViewportView(txtrRules);
 	txtrRules.setBackground(UIManager.getColor("control"));
@@ -402,6 +419,7 @@ public class MainWindow
 	panel_5.add(scrollPane_6);
 
 	final JTextArea txtrCancels = new JTextArea();
+	txtrCancels.setFont(stdFont);
 	scrollPane_6.setViewportView(txtrCancels);
 	txtrCancels.setBackground(UIManager.getColor("control"));
 	txtrCancels.setWrapStyleWord(true);
@@ -417,6 +435,7 @@ public class MainWindow
 	panel_5.add(scrollPane_7);
 
 	final JTextArea txtrCanceledBy = new JTextArea();
+	txtrCanceledBy.setFont(stdFont);
 	scrollPane_7.setViewportView(txtrCanceledBy);
 	txtrCanceledBy.setBackground(UIManager.getColor("control"));
 	txtrCanceledBy.setWrapStyleWord(true);
@@ -439,6 +458,7 @@ public class MainWindow
 	panel_6.add(scrollPane_8);
 
 	final JTextArea txtrMStarship = new JTextArea();
+	txtrMStarship.setFont(stdFont);
 	scrollPane_8.setViewportView(txtrMStarship);
 	txtrMStarship.setBackground(UIManager.getColor("control"));
 	txtrMStarship.setWrapStyleWord(true);
@@ -454,6 +474,7 @@ public class MainWindow
 	panel_6.add(scrollPane_9);
 
 	final JTextArea txtrMWeapon = new JTextArea();
+	txtrMWeapon.setFont(stdFont);
 	scrollPane_9.setViewportView(txtrMWeapon);
 	txtrMWeapon.setBackground(UIManager.getColor("control"));
 	txtrMWeapon.setWrapStyleWord(true);
@@ -585,6 +606,7 @@ public class MainWindow
 	frmswipStarWars.getContentPane().add(scrollPane);
 
 	listCardList = new JList();
+	listCardList.setFont(stdFont);
 	listCardList.addListSelectionListener(new ListSelectionListener()
 	{
 	    public void valueChanged(ListSelectionEvent arg0)
@@ -592,6 +614,7 @@ public class MainWindow
 		String name = cardListModel.getCardName(listCardList.getSelectedIndex());
 		
 		dtrpnCarginfo.setText(dbc.getCardInfo(name));
+		dtrpnCarginfo.setCaretPosition(0);
 		
 		String[] extras = dbc.getCardExtras(name);
 		
@@ -602,15 +625,25 @@ public class MainWindow
 		    textFieldNickname.setText(extras[2]);
 		    textFieldCounterpart.setText(extras[3]);
 		    txtrPulls.setText(extras[4]);
+		    txtrPulls.setCaretPosition(0);
 		    txtrPulledBy.setText(extras[5]);
+		    txtrPulledBy.setCaretPosition(0);
 		    txtpnCardinfo.setText(extras[6]);
+		    txtpnCardinfo.setCaretPosition(0);
 		    txtrCharacteristics.setText(extras[7]);
+		    txtrCharacteristics.setCaretPosition(0);
 		    txtrCombo.setText(extras[8]);
+		    txtrCombo.setCaretPosition(0);
 		    txtrRules.setText(extras[9]);
+		    txtrRules.setCaretPosition(0);
 		    txtrCancels.setText(extras[10]);
+		    txtrCancels.setCaretPosition(0);
 		    txtrCanceledBy.setText(extras[11]);
+		    txtrCanceledBy.setCaretPosition(0);
 		    txtrMStarship.setText(extras[12]);
+		    txtrMStarship.setCaretPosition(0);
 		    txtrMWeapon.setText(extras[13]);
+		    txtrMWeapon.setCaretPosition(0);
 		}
 	    }
 	});

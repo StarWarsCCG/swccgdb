@@ -139,7 +139,7 @@ public class DatabaseController
 	System.out.println(cardname);
 	Connection conn =  null;
 	ResultSet rs = null;
-	String result = null;
+	String result = "";
 	
 	try
 	{
@@ -203,8 +203,6 @@ public class DatabaseController
 		
 		result += "\nDeploy: " + deploy + " Forfeit: " + forfeit + "\n\n" +
 		    gametext;
-		
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Effect"))
@@ -216,8 +214,6 @@ public class DatabaseController
 		    cardtype + " - " + subtype + "\n" +
 		    "Icons: " + icons + "\n\n" +
 		    gametext;
-		
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Interrupt"))
@@ -229,8 +225,6 @@ public class DatabaseController
 		    cardtype + " - " + subtype + "\n" +
 		    "Icons: " + icons + "\n\n" +
 		    gametext;
-		
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Defensive Shield"))
@@ -242,8 +236,6 @@ public class DatabaseController
 		    cardtype + " - " + subtype + "\n" +
 		    "Icons: " + icons + "\n\n" +
 		    gametext;
-		
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Admiral's Order"))
@@ -254,8 +246,6 @@ public class DatabaseController
 		    cardtype + " - " + subtype + "\n" +
 		    "Icons: " + icons + "\n\n" +
 		    gametext;
-		
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Jedi Test"))
@@ -266,8 +256,6 @@ public class DatabaseController
 		    cardtype + " - " + jeditestnumber + "\n" +
 		    "Icons: " + icons + "\n\n" +
 		    gametext;
-		
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Creature"))
@@ -280,8 +268,6 @@ public class DatabaseController
 		    "Icons: " + icons + "\n" +
 		    "Ferocity: " + ferocity + " " + creaturedvname + ": " + creaturedv + "\n\n" +
 		    gametext;
-		
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Device"))
@@ -293,8 +279,6 @@ public class DatabaseController
 		    cardtype + " - " + subtype + "\n" +
 		    "Icons: " + icons + "\n\n" +
 		    gametext;
-		
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Epic Event"))
@@ -305,8 +289,6 @@ public class DatabaseController
 		    cardtype + " - " + subtype + "\n" +
 		    "Icons: " + icons + "\n\n" +
 		    gametext;
-		
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Podracer"))
@@ -318,8 +300,6 @@ public class DatabaseController
 		    cardtype + "\n" +
 		    "Icons: " + icons + "\n\n" +
 		    gametext;
-		
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Weapon"))
@@ -334,8 +314,6 @@ public class DatabaseController
 		    result += "Deploy: " + deploy + " Forfeit: " + forfeit + "\n\n";
 
 		result += "\n" + gametext;
-		
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Starship"))
@@ -354,7 +332,6 @@ public class DatabaseController
 		    result += " Maneuver: " + maneuver + " Hyperspeed: " + hyperspeed;
 		
 		result += "\n\n" + gametext;
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Vehicle"))
@@ -373,7 +350,6 @@ public class DatabaseController
 		    result += " Maneuver: " + maneuver + " Landspeed: " + landspeed;
 		
 		result += "\n\n" + gametext;
-		return result;
 	    }
 	    
 	    if(cardtype.equals("Objective"))
@@ -382,8 +358,10 @@ public class DatabaseController
 		    objectivefrontname + " / " + objectivebackname + "\n" +
 		    grouping + "\n" + 
 		    "Icons: " + icons + "\n\n" + 
-		    gametext;
-		return result;
+		    "[Front]\n" + 
+		    objectivefront + "\n\n" +
+		    "[Back]\n" + 
+		    objectiveback;
 	    }
 	    
 	    if(cardtype.equals("Location"))
@@ -400,9 +378,9 @@ public class DatabaseController
 		    lstext + "\n\n" + 
 		    "[Dark] " + dsicons + "\n" +
 		    dstext;
-		    
-		return result;
 	    }
+	    
+	    return refactor(result);
 	}
 	catch(Exception e)
 	{
@@ -462,6 +440,11 @@ public class DatabaseController
 	    result[11] = rs.getString("iscanceledby");
 	    result[12] = rs.getString("matching");
 	    result[13] = rs.getString("matchingweapon");
+	    
+	    for(int i = 0; i < result.length; i++)
+	    {
+		result[i] = refactor(result[i]);
+	    }
 	    
 	}
 	catch(Exception e)
@@ -589,5 +572,29 @@ public class DatabaseController
 	    }
 	}
 	return results;
+    }
+    
+    
+    private String refactor(String string)
+    {
+	String par = "\\par";
+	String par_r = "\n";
+	String b = "\\b";
+	String b_r = "";
+	String b0 = "\\b0";
+	String b0_r = "";
+	String ul = "\\ul";
+	String ul_r = "";
+	String ul0 = "\\ul0";
+	String ul0_r = "\n";
+	
+	string = string.replace(par, par_r);
+	string = string.replace(b0,b0_r);
+	string = string.replace(b,b_r);
+	string = string.replace(ul0,ul0_r);
+	string = string.replace(ul,ul_r);
+	
+	
+	return string;
     }
 }
