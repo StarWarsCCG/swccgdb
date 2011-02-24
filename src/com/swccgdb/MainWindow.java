@@ -53,12 +53,13 @@ public class MainWindow
     private JList	      listCardList;
     private CardListModel      cardListModel;
     private JLabel	     lblNumCards;
-    
-    private Font	stdFont;
-    private Font	bldFont;
-    
-    private Color 	editColor = Color.RED;
-    private Color 	stdColor = UIManager.getColor("control");
+    private JScrollPane	scrollPane;
+
+    private Font	       stdFont;
+    private Font	       bldFont;
+
+    private Color	      editColor   = Color.RED;
+    private Color	      stdColor    = UIManager.getColor("control");
 
     /**
      * Launch the application.
@@ -88,7 +89,7 @@ public class MainWindow
     public MainWindow()
     {
 	dbc = new DatabaseController();
-	cardListModel = new CardListModel(dbc);
+	cardListModel = new CardListModel(dbc.getCardNames(""));
 	stdFont = new Font("Tahoma", Font.PLAIN, 12);
 	bldFont = new Font("Tahoma", Font.BOLD, 12);
 	initialize();
@@ -100,7 +101,9 @@ public class MainWindow
     private void initialize()
     {
 	frmswipStarWars = new JFrame();
-	frmswipStarWars.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/com/swccgdb/resources/imperial.png")));
+	frmswipStarWars.setIconImage(Toolkit.getDefaultToolkit().getImage(
+		MainWindow.class
+			.getResource("/com/swccgdb/resources/imperial.png")));
 	frmswipStarWars.setResizable(false);
 	frmswipStarWars
 		.setTitle("[sw-ip] Star Wars: CCG Information Pool - Java\n");
@@ -150,10 +153,10 @@ public class MainWindow
 	panelCardDetails.setBounds(306, 28, 285, 276);
 	frmswipStarWars.getContentPane().add(panelCardDetails);
 	panelCardDetails.setLayout(new BorderLayout(0, 0));
-	
+
 	JScrollPane scrollPane_11 = new JScrollPane();
 	panelCardDetails.add(scrollPane_11, BorderLayout.CENTER);
-	
+
 	final JTextArea dtrpnCarginfo = new JTextArea();
 	dtrpnCarginfo.setEditable(false);
 	dtrpnCarginfo.setLineWrap(true);
@@ -179,12 +182,36 @@ public class MainWindow
 	panelFilter.add(rdbtnLightside);
 
 	JButton btnFilter = new JButton("Filter");
+	btnFilter.addActionListener(new ActionListener()
+	{
+	    public void actionPerformed(ActionEvent arg0)
+	    {
+		// TODO: enter this information
+		List<String> one = new ArrayList<String>();
+		List<String> two = new ArrayList<String>();
+		List<String> three = new ArrayList<String>();
+		one.add("cardname");
+		two.add("LIKE");
+		three.add("luke");
+		updateCardList(dbc.getFilteredList(one, two, three));
+	    }
+	});
 	btnFilter.setBounds(154, 69, 100, 29);
 	panelFilter.add(btnFilter);
 
 	JComboBox comboBoxFilter1 = new JComboBox();
 	comboBoxFilter1.setFont(stdFont);
-	comboBoxFilter1.setModel(new DefaultComboBoxModel(new String[] {"[Select One]", "Ability", "Armor", "Card Name", "Card Type", "Characteristics, Attributes, etc.", "Deploy Cost", "Destiny", "Expansion", "Ferocity", "Force Aptitude", "Forfeit", "Game Text", "Hyperspeed", "Icons", "Influence", "Landspeed", "Lore", "Maneuver", "Model Type", "Politics", "Power", "Rarity", "Subtype", "Uniqueness", "", "Force Icons Dark Side", "Force Icons Light Side", "Parsec Number", "", "Abbreviation / Nickname", "Pulls", "Is Pulled", "Cancels", "Is Canceled By", "Combo", "Information", "Rules", "Errata", "", "Inventory", "Needs"}));
+	comboBoxFilter1.setModel(new DefaultComboBoxModel(new String[] {
+		"[Select One]", "Ability", "Armor", "Card Name", "Card Type",
+		"Characteristics, Attributes, etc.", "Deploy Cost", "Destiny",
+		"Expansion", "Ferocity", "Force Aptitude", "Forfeit",
+		"Game Text", "Hyperspeed", "Icons", "Influence", "Landspeed",
+		"Lore", "Maneuver", "Model Type", "Politics", "Power",
+		"Rarity", "Subtype", "Uniqueness", "", "Force Icons Dark Side",
+		"Force Icons Light Side", "Parsec Number", "",
+		"Abbreviation / Nickname", "Pulls", "Is Pulled", "Cancels",
+		"Is Canceled By", "Combo", "Information", "Rules", "Errata",
+		"", "Inventory", "Needs" }));
 	comboBoxFilter1.setBounds(6, 16, 136, 24);
 	panelFilter.add(comboBoxFilter1);
 
@@ -216,6 +243,13 @@ public class MainWindow
 	panelFilter.add(btnRemove);
 
 	JButton btnClearFilter = new JButton("Clear Filter");
+	btnClearFilter.addActionListener(new ActionListener()
+	{
+	    public void actionPerformed(ActionEvent arg0)
+	    {
+		updateCardList(dbc.getCardNames(""));
+	    }
+	});
 	btnClearFilter.setBounds(154, 164, 100, 29);
 	panelFilter.add(btnClearFilter);
 
@@ -313,7 +347,7 @@ public class MainWindow
 	JLabel lblNewLabel = new JLabel("Pulls");
 	lblNewLabel.setBounds(188, 19, 35, 16);
 	panelPulling.add(lblNewLabel);
-	
+
 	JScrollPane scrollPane_2 = new JScrollPane();
 	scrollPane_2.setBounds(6, 36, 217, 61);
 	panelPulling.add(scrollPane_2);
@@ -329,7 +363,7 @@ public class MainWindow
 	JLabel lblPulledBy = new JLabel("Is pulled by");
 	lblPulledBy.setBounds(150, 102, 73, 16);
 	panelPulling.add(lblPulledBy);
-	
+
 	JScrollPane scrollPane_3 = new JScrollPane();
 	scrollPane_3.setBounds(6, 122, 217, 52);
 	panelPulling.add(scrollPane_3);
@@ -348,7 +382,7 @@ public class MainWindow
 	panel_1.setBounds(251, 316, 242, 286);
 	frmswipStarWars.getContentPane().add(panel_1);
 	panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
-	
+
 	JScrollPane scrollPane_1 = new JScrollPane();
 	panel_1.add(scrollPane_1);
 
@@ -366,7 +400,7 @@ public class MainWindow
 	panel_2.setBounds(251, 608, 242, 70);
 	frmswipStarWars.getContentPane().add(panel_2);
 	panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.X_AXIS));
-	
+
 	JScrollPane scrollPane_4 = new JScrollPane();
 	panel_2.add(scrollPane_4);
 
@@ -384,17 +418,17 @@ public class MainWindow
 	panel_3.setBounds(505, 316, 242, 181);
 	frmswipStarWars.getContentPane().add(panel_3);
 	panel_3.setLayout(new BorderLayout(0, 0));
-	
+
 	JScrollPane scrollPane_10 = new JScrollPane();
 	panel_3.add(scrollPane_10, BorderLayout.CENTER);
-	
-		final JTextArea txtrCombo = new JTextArea();
-		txtrCombo.setFont(stdFont);
-		scrollPane_10.setViewportView(txtrCombo);
-		txtrCombo.setLineWrap(true);
-		txtrCombo.setBackground(stdColor);
-		txtrCombo.setWrapStyleWord(true);
-		txtrCombo.setEditable(false);
+
+	final JTextArea txtrCombo = new JTextArea();
+	txtrCombo.setFont(stdFont);
+	scrollPane_10.setViewportView(txtrCombo);
+	txtrCombo.setLineWrap(true);
+	txtrCombo.setBackground(stdColor);
+	txtrCombo.setWrapStyleWord(true);
+	txtrCombo.setEditable(false);
 
 	JPanel panel_4 = new JPanel();
 	panel_4.setBorder(new TitledBorder(null, "Rules", TitledBorder.LEADING,
@@ -402,7 +436,7 @@ public class MainWindow
 	panel_4.setBounds(505, 502, 242, 176);
 	frmswipStarWars.getContentPane().add(panel_4);
 	panel_4.setLayout(new BoxLayout(panel_4, BoxLayout.X_AXIS));
-	
+
 	JScrollPane scrollPane_5 = new JScrollPane();
 	panel_4.add(scrollPane_5);
 
@@ -424,7 +458,7 @@ public class MainWindow
 	JLabel lblCancels = new JLabel("Cancels");
 	lblCancels.setBounds(166, 16, 57, 16);
 	panel_5.add(lblCancels);
-	
+
 	JScrollPane scrollPane_6 = new JScrollPane();
 	scrollPane_6.setBounds(6, 36, 217, 52);
 	panel_5.add(scrollPane_6);
@@ -440,7 +474,7 @@ public class MainWindow
 	JLabel lblIsCanceledBy = new JLabel("Is canceled by");
 	lblIsCanceledBy.setBounds(134, 94, 89, 16);
 	panel_5.add(lblIsCanceledBy);
-	
+
 	JScrollPane scrollPane_7 = new JScrollPane();
 	scrollPane_7.setBounds(6, 112, 217, 56);
 	panel_5.add(scrollPane_7);
@@ -463,7 +497,7 @@ public class MainWindow
 	JLabel lblMatchingStarship = new JLabel("Matching Starship");
 	lblMatchingStarship.setBounds(110, 16, 113, 16);
 	panel_6.add(lblMatchingStarship);
-	
+
 	JScrollPane scrollPane_8 = new JScrollPane();
 	scrollPane_8.setBounds(6, 36, 217, 53);
 	panel_6.add(scrollPane_8);
@@ -479,7 +513,7 @@ public class MainWindow
 	JLabel lblMatchingWeapon = new JLabel("Matching Weapon");
 	lblMatchingWeapon.setBounds(110, 92, 113, 16);
 	panel_6.add(lblMatchingWeapon);
-	
+
 	JScrollPane scrollPane_9 = new JScrollPane();
 	scrollPane_9.setBounds(6, 108, 217, 55);
 	panel_6.add(scrollPane_9);
@@ -532,8 +566,6 @@ public class MainWindow
 			return;
 		    }
 		}
-		
-		
 
 		textFieldNickname.setEditable(editable);
 		if (editable)
@@ -614,7 +646,7 @@ public class MainWindow
 	});
 	panel_7.add(chckbxFieldsEditable, BorderLayout.CENTER);
 
-	JScrollPane scrollPane = new JScrollPane();
+	scrollPane = new JScrollPane();
 	scrollPane.setBounds(10, 28, 284, 276);
 	frmswipStarWars.getContentPane().add(scrollPane);
 
@@ -624,14 +656,15 @@ public class MainWindow
 	{
 	    public void valueChanged(ListSelectionEvent arg0)
 	    {
-		String name = cardListModel.getCardName(listCardList.getSelectedIndex());
-		
+		String name = cardListModel.getCardName(listCardList
+			.getSelectedIndex());
+
 		dtrpnCarginfo.setText(dbc.getCardInfo(name));
 		dtrpnCarginfo.setCaretPosition(0);
-		
+
 		String[] extras = dbc.getCardExtras(name);
-		
-		if(extras != null)
+
+		if (extras != null)
 		{
 		    lblExpansion.setText(extras[0]);
 		    lblRarity.setText(extras[1]);
@@ -666,6 +699,16 @@ public class MainWindow
 	listCardList.setModel(cardListModel);
 	this.lblNumCards.setText(cardListModel.getSize() + " Cards");
     }
+
+    private void updateCardList(List<String> cardnames)
+    {
+	cardListModel.updateModel(cardnames);
+	listCardList.repaint();
+	this.lblNumCards.setText("Cards: " + cardnames.size());
+	scrollPane.repaint();
+	listCardList.setSelectedIndex(0);
+	
+    }
 }
 
 @SuppressWarnings("serial")
@@ -674,10 +717,9 @@ class CardListModel extends AbstractListModel
     List<String>       values = new ArrayList<String>();
     DatabaseController dbc;
 
-    CardListModel(DatabaseController dbc)
+    CardListModel(List<String> list)
     {
-	this.dbc = dbc;
-	updateModel("");
+	updateModel(list);
     }
 
     @Override
@@ -685,7 +727,7 @@ class CardListModel extends AbstractListModel
     {
 	return values.get(index);
     }
-    
+
     public String getCardName(int index)
     {
 	return values.get(index);
@@ -697,10 +739,10 @@ class CardListModel extends AbstractListModel
 	return values.size();
     }
 
-    public int updateModel(String keyterm)
+    public int updateModel(List<String> list)
     {
 	values.clear();
-	values = dbc.getCardNames(keyterm);
+	values = list;
 	return getSize();
     }
 }
