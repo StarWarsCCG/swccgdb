@@ -199,7 +199,7 @@ public class DatabaseController
 		if(!politics.equals(""))
 		    result += " Politics: " + politics;
 		if(!forceapt.equals(""))
-		    result += forceapt;
+		    result += " " + forceapt;
 		
 		result += "\nDeploy: " + deploy + " Forfeit: " + forfeit + "\n\n" +
 		    gametext;

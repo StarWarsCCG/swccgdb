@@ -37,6 +37,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.JEditorPane;
+import javax.swing.DefaultComboBoxModel;
 
 public class MainWindow
 {
@@ -54,8 +55,10 @@ public class MainWindow
     private JLabel	     lblNumCards;
     
     private Font	stdFont;
-    private Font	smlFont;
     private Font	bldFont;
+    
+    private Color 	editColor = Color.RED;
+    private Color 	stdColor = UIManager.getColor("control");
 
     /**
      * Launch the application.
@@ -87,7 +90,6 @@ public class MainWindow
 	dbc = new DatabaseController();
 	cardListModel = new CardListModel(dbc);
 	stdFont = new Font("Tahoma", Font.PLAIN, 12);
-	smlFont = new Font("Tahoma", Font.PLAIN, 10);
 	bldFont = new Font("Tahoma", Font.BOLD, 12);
 	initialize();
     }
@@ -102,7 +104,7 @@ public class MainWindow
 	frmswipStarWars.setResizable(false);
 	frmswipStarWars
 		.setTitle("[sw-ip] Star Wars: CCG Information Pool - Java\n");
-	frmswipStarWars.setBounds(100, 100, 1016, 750);
+	frmswipStarWars.setBounds(100, 100, 999, 751);
 	frmswipStarWars.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	JMenuBar menuBar = new JMenuBar();
@@ -153,6 +155,7 @@ public class MainWindow
 	panelCardDetails.add(scrollPane_11, BorderLayout.CENTER);
 	
 	final JTextArea dtrpnCarginfo = new JTextArea();
+	dtrpnCarginfo.setEditable(false);
 	dtrpnCarginfo.setLineWrap(true);
 	dtrpnCarginfo.setWrapStyleWord(true);
 	dtrpnCarginfo.setFont(stdFont);
@@ -180,15 +183,19 @@ public class MainWindow
 	panelFilter.add(btnFilter);
 
 	JComboBox comboBoxFilter1 = new JComboBox();
-	comboBoxFilter1.setBounds(6, 16, 136, 27);
+	comboBoxFilter1.setFont(stdFont);
+	comboBoxFilter1.setModel(new DefaultComboBoxModel(new String[] {"[Select One]", "Ability", "Armor", "Card Name", "Card Type", "Characteristics, Attributes, etc.", "Deploy Cost", "Destiny", "Expansion", "Ferocity", "Force Aptitude", "Forfeit", "Game Text", "Hyperspeed", "Icons", "Influence", "Landspeed", "Lore", "Maneuver", "Model Type", "Politics", "Power", "Rarity", "Subtype", "Uniqueness", "", "Force Icons Dark Side", "Force Icons Light Side", "Parsec Number", "", "Abbreviation / Nickname", "Pulls", "Is Pulled", "Cancels", "Is Canceled By", "Combo", "Information", "Rules", "Errata", "", "Inventory", "Needs"}));
+	comboBoxFilter1.setBounds(6, 16, 136, 24);
 	panelFilter.add(comboBoxFilter1);
 
 	JComboBox comboBoxFilter2 = new JComboBox();
-	comboBoxFilter2.setBounds(6, 42, 136, 27);
+	comboBoxFilter2.setFont(stdFont);
+	comboBoxFilter2.setBounds(6, 42, 136, 24);
 	panelFilter.add(comboBoxFilter2);
 
 	JComboBox comboBoxFilter3 = new JComboBox();
-	comboBoxFilter3.setBounds(6, 69, 136, 27);
+	comboBoxFilter3.setFont(stdFont);
+	comboBoxFilter3.setBounds(6, 69, 136, 29);
 	panelFilter.add(comboBoxFilter3);
 
 	JPanel panel_8 = new JPanel();
@@ -199,6 +206,8 @@ public class MainWindow
 	panel_8.setLayout(new BorderLayout(0, 0));
 
 	JList listFilterList = new JList();
+	listFilterList.setFont(stdFont);
+	listFilterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	panel_8.add(listFilterList, BorderLayout.CENTER);
 
 	JButton btnRemove = new JButton("Remove");
@@ -277,7 +286,7 @@ public class MainWindow
 
 	textFieldNickname = new JTextField();
 	textFieldNickname.setFont(stdFont);
-	textFieldNickname.setBackground(UIManager.getColor("control"));
+	textFieldNickname.setBackground(stdColor);
 	textFieldNickname.setEditable(false);
 	textFieldNickname.setBounds(6, 32, 217, 22);
 	panelCardHelp.add(textFieldNickname);
@@ -312,7 +321,7 @@ public class MainWindow
 	final JTextArea txtrPulls = new JTextArea();
 	txtrPulls.setFont(stdFont);
 	scrollPane_2.setViewportView(txtrPulls);
-	txtrPulls.setBackground(UIManager.getColor("control"));
+	txtrPulls.setBackground(stdColor);
 	txtrPulls.setWrapStyleWord(true);
 	txtrPulls.setEditable(false);
 	txtrPulls.setLineWrap(true);
@@ -328,7 +337,7 @@ public class MainWindow
 	final JTextArea txtrPulledBy = new JTextArea();
 	txtrPulledBy.setFont(stdFont);
 	scrollPane_3.setViewportView(txtrPulledBy);
-	txtrPulledBy.setBackground(UIManager.getColor("control"));
+	txtrPulledBy.setBackground(stdColor);
 	txtrPulledBy.setWrapStyleWord(true);
 	txtrPulledBy.setEditable(false);
 	txtrPulledBy.setLineWrap(true);
@@ -348,7 +357,7 @@ public class MainWindow
 	txtpnCardinfo.setWrapStyleWord(true);
 	txtpnCardinfo.setFont(stdFont);
 	scrollPane_1.setViewportView(txtpnCardinfo);
-	txtpnCardinfo.setBackground(UIManager.getColor("control"));
+	txtpnCardinfo.setBackground(stdColor);
 	txtpnCardinfo.setEditable(false);
 
 	JPanel panel_2 = new JPanel();
@@ -361,11 +370,13 @@ public class MainWindow
 	JScrollPane scrollPane_4 = new JScrollPane();
 	panel_2.add(scrollPane_4);
 
-	final JEditorPane txtrCharacteristics = new JEditorPane();
+	final JTextArea txtrCharacteristics = new JTextArea();
+	txtrCharacteristics.setWrapStyleWord(true);
+	txtrCharacteristics.setLineWrap(true);
 	txtrCharacteristics.setFont(bldFont);
 	scrollPane_4.setViewportView(txtrCharacteristics);
 	txtrCharacteristics.setEditable(false);
-	txtrCharacteristics.setBackground(UIManager.getColor("control"));
+	txtrCharacteristics.setBackground(stdColor);
 
 	JPanel panel_3 = new JPanel();
 	panel_3.setBorder(new TitledBorder(null, "Combo", TitledBorder.LEADING,
@@ -381,7 +392,7 @@ public class MainWindow
 		txtrCombo.setFont(stdFont);
 		scrollPane_10.setViewportView(txtrCombo);
 		txtrCombo.setLineWrap(true);
-		txtrCombo.setBackground(UIManager.getColor("control"));
+		txtrCombo.setBackground(stdColor);
 		txtrCombo.setWrapStyleWord(true);
 		txtrCombo.setEditable(false);
 
@@ -399,7 +410,7 @@ public class MainWindow
 	txtrRules.setFont(stdFont);
 	txtrRules.setLineWrap(true);
 	scrollPane_5.setViewportView(txtrRules);
-	txtrRules.setBackground(UIManager.getColor("control"));
+	txtrRules.setBackground(stdColor);
 	txtrRules.setWrapStyleWord(true);
 	txtrRules.setEditable(false);
 
@@ -421,7 +432,7 @@ public class MainWindow
 	final JTextArea txtrCancels = new JTextArea();
 	txtrCancels.setFont(stdFont);
 	scrollPane_6.setViewportView(txtrCancels);
-	txtrCancels.setBackground(UIManager.getColor("control"));
+	txtrCancels.setBackground(stdColor);
 	txtrCancels.setWrapStyleWord(true);
 	txtrCancels.setEditable(false);
 	txtrCancels.setLineWrap(true);
@@ -437,7 +448,7 @@ public class MainWindow
 	final JTextArea txtrCanceledBy = new JTextArea();
 	txtrCanceledBy.setFont(stdFont);
 	scrollPane_7.setViewportView(txtrCanceledBy);
-	txtrCanceledBy.setBackground(UIManager.getColor("control"));
+	txtrCanceledBy.setBackground(stdColor);
 	txtrCanceledBy.setWrapStyleWord(true);
 	txtrCanceledBy.setEditable(false);
 	txtrCanceledBy.setLineWrap(true);
@@ -460,7 +471,7 @@ public class MainWindow
 	final JTextArea txtrMStarship = new JTextArea();
 	txtrMStarship.setFont(stdFont);
 	scrollPane_8.setViewportView(txtrMStarship);
-	txtrMStarship.setBackground(UIManager.getColor("control"));
+	txtrMStarship.setBackground(stdColor);
 	txtrMStarship.setWrapStyleWord(true);
 	txtrMStarship.setEditable(false);
 	txtrMStarship.setLineWrap(true);
@@ -476,7 +487,7 @@ public class MainWindow
 	final JTextArea txtrMWeapon = new JTextArea();
 	txtrMWeapon.setFont(stdFont);
 	scrollPane_9.setViewportView(txtrMWeapon);
-	txtrMWeapon.setBackground(UIManager.getColor("control"));
+	txtrMWeapon.setBackground(stdColor);
 	txtrMWeapon.setWrapStyleWord(true);
 	txtrMWeapon.setEditable(false);
 	txtrMWeapon.setLineWrap(true);
@@ -484,7 +495,7 @@ public class MainWindow
 	JPanel panel_7 = new JPanel();
 	panel_7.setBorder(new TitledBorder(null, "Edit Fields",
 		TitledBorder.LEADING, TitledBorder.TOP, null, null));
-	panel_7.setBounds(748, 243, 123, 61);
+	panel_7.setBounds(748, 244, 123, 61);
 	frmswipStarWars.getContentPane().add(panel_7);
 	panel_7.setLayout(new BorderLayout(0, 0));
 
@@ -521,76 +532,78 @@ public class MainWindow
 			return;
 		    }
 		}
+		
+		
 
 		textFieldNickname.setEditable(editable);
 		if (editable)
-		    textFieldNickname.setBackground(Color.RED);
+		    textFieldNickname.setBackground(editColor);
 		else
-		    textFieldNickname.setBackground(Color.WHITE);
+		    textFieldNickname.setBackground(stdColor);
 
 		textFieldCounterpart.setEditable(editable);
 		if (editable)
-		    textFieldCounterpart.setBackground(Color.RED);
+		    textFieldCounterpart.setBackground(editColor);
 		else
-		    textFieldCounterpart.setBackground(Color.WHITE);
+		    textFieldCounterpart.setBackground(stdColor);
 
 		txtrPulls.setEditable(editable);
 		if (editable)
-		    txtrPulls.setBackground(Color.RED);
+		    txtrPulls.setBackground(editColor);
 		else
-		    txtrPulls.setBackground(UIManager.getColor("control"));
+		    txtrPulls.setBackground(stdColor);
 
 		txtrPulledBy.setEditable(editable);
 		if (editable)
-		    txtrPulledBy.setBackground(Color.RED);
+		    txtrPulledBy.setBackground(editColor);
 		else
-		    txtrPulledBy.setBackground(UIManager.getColor("control"));
+		    txtrPulledBy.setBackground(stdColor);
 
 		txtpnCardinfo.setEditable(editable);
 		if (editable)
-		    txtpnCardinfo.setBackground(Color.RED);
+		    txtpnCardinfo.setBackground(editColor);
 		else
-		    txtpnCardinfo.setBackground(UIManager.getColor("control"));
+		    txtpnCardinfo.setBackground(stdColor);
 
 		txtrCombo.setEditable(editable);
 		if (editable)
-		    txtrCombo.setBackground(Color.RED);
+		    txtrCombo.setBackground(editColor);
 		else
-		    txtrCombo.setBackground(UIManager.getColor("control"));
+		    txtrCombo.setBackground(stdColor);
 
 		txtrRules.setEditable(editable);
 		if (editable)
-		    txtrRules.setBackground(Color.RED);
+		    txtrRules.setBackground(editColor);
 		else
-		    txtrRules.setBackground(UIManager.getColor("control"));
+		    txtrRules.setBackground(stdColor);
 
 		txtrCancels.setEditable(editable);
 		if (editable)
-		    txtrCancels.setBackground(Color.RED);
+		    txtrCancels.setBackground(editColor);
 		else
-		    txtrCancels.setBackground(UIManager.getColor("control"));
+		    txtrCancels.setBackground(stdColor);
 
 		txtrCanceledBy.setEditable(editable);
 		if (editable)
-		    txtrCanceledBy.setBackground(Color.RED);
+		    txtrCanceledBy.setBackground(editColor);
 		else
-		    txtrCanceledBy.setBackground(UIManager.getColor("control"));
+		    txtrCanceledBy.setBackground(stdColor);
 
 		txtrMStarship.setEditable(editable);
 		if (editable)
-		    txtrMStarship.setBackground(Color.RED);
+		    txtrMStarship.setBackground(editColor);
 		else
-		    txtrMStarship.setBackground(UIManager.getColor("control"));
+		    txtrMStarship.setBackground(stdColor);
 
 		txtrMWeapon.setEditable(editable);
 		if (editable)
-		    txtrMWeapon.setBackground(Color.RED);
+		    txtrMWeapon.setBackground(editColor);
 		else
-		    txtrMWeapon.setBackground(UIManager.getColor("control"));
+		    txtrMWeapon.setBackground(stdColor);
 
 		txtrCharacteristics.setEditable(editable);
 		if (editable)
-		    txtrCharacteristics.setBackground(Color.RED);
+		    txtrCharacteristics.setBackground(editColor);
 		else
 		    txtrCharacteristics.setBackground(UIManager
 			    .getColor("control"));
