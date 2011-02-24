@@ -190,9 +190,18 @@ public class DatabaseController
 		    lore + "\n\n" + 
 		    grouping + "\n" +
 		    cardtype + " - " + subtype + "\n" +
-		    "Icons: " + icons + "\n" +
-		    "Power: " + power + " Ability: " + ability + " Armor: " + armor + "\n" + 
-		    "Deploy: " + deploy + " Forfeit: " + forfeit + "\n\n" +
+		    "Icons: " + icons + "\n" + "Power: " + power;
+		
+		if(!ability.equals(""))
+		    result += " Ability: " + ability;
+		if(!armor.equals(""))
+		    result += " Armor: " + armor;
+		if(!politics.equals(""))
+		    result += " Politics: " + politics;
+		if(!forceapt.equals(""))
+		    result += forceapt;
+		
+		result += "\nDeploy: " + deploy + " Forfeit: " + forfeit + "\n\n" +
 		    gametext;
 		
 		return result;
@@ -381,13 +390,16 @@ public class DatabaseController
 	    {
 		result = 
 		    uniqueness + name + "\n" + 
-		    grouping + "\n" + 
-		    "Icons: " + icons + "\n\n" + 
+		    grouping + "\n";
+		
+		if(!parsec.equals(""))
+		    result += "Parsec: " + parsec + "\n";
+		
+		result += "Icons: " + icons + "\n\n" + 
 		    "[Light] " + lsicons + "\n" +
 		    lstext + "\n\n" + 
 		    "[Dark] " + dsicons + "\n" +
 		    dstext;
-		    
 		    
 		return result;
 	    }
