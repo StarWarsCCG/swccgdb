@@ -146,16 +146,24 @@ public class MainWindow
 	menuBar.add(mnTools);
 
 	JMenuItem mntmOptions = new JMenuItem("Options");
+	mntmOptions.setEnabled(false);
 	mnTools.add(mntmOptions);
 
 	JMenu mnHelp = new JMenu("Help");
 	menuBar.add(mnHelp);
 
-	JMenuItem mntmHelp = new JMenuItem("Help");
-	mnHelp.add(mntmHelp);
-
-	JMenuItem mntmInfo = new JMenuItem("Info");
+	JMenuItem mntmInfo = new JMenuItem("About");
+	mntmInfo.addActionListener(new ActionListener()
+	{
+	    public void actionPerformed(ActionEvent arg0)
+	    {
+	    }
+	});
 	mnHelp.add(mntmInfo);
+
+	JMenuItem mntmHelp = new JMenuItem("Help");
+	mntmHelp.setEnabled(false);
+	mnHelp.add(mntmHelp);
 	frmswipStarWars.getContentPane().setLayout(null);
 
 	lblNumCards = new JLabel("0 Cards");
@@ -196,7 +204,8 @@ public class MainWindow
 		{
 		    for (int i = 0; i < column.size(); i++)
 		    {
-			if(column.get(i).equals("Grouping") && term.get(i).equals("Dark"))
+			if (column.get(i).equals("Grouping")
+				&& term.get(i).equals("Dark"))
 			    return;
 			if (column.get(i).equals("Grouping")
 				&& term.get(i).equals("Light"))
@@ -229,7 +238,8 @@ public class MainWindow
 		{
 		    for (int i = 0; i < column.size(); i++)
 		    {
-			if(column.get(i).equals("Grouping") && term.get(i).equals("Light"))
+			if (column.get(i).equals("Grouping")
+				&& term.get(i).equals("Light"))
 			    return;
 			if (column.get(i).equals("Grouping")
 				&& term.get(i).equals("Dark"))
@@ -320,12 +330,14 @@ public class MainWindow
 	{
 	    public void actionPerformed(ActionEvent arg0)
 	    {
-		int index = listFilterList.getSelectedIndex(); 
-		if(index >= 0)
+		int index = listFilterList.getSelectedIndex();
+		if (index >= 0)
 		{
-		    if(column.get(index).equals("Grouping") && term.get(index).equals("Light"))
+		    if (column.get(index).equals("Grouping")
+			    && term.get(index).equals("Light"))
 			buttonGroup.clearSelection();
-		    if(column.get(index).equals("Grouping") && term.get(index).equals("Dark"))
+		    if (column.get(index).equals("Grouping")
+			    && term.get(index).equals("Dark"))
 			buttonGroup.clearSelection();
 		    column.remove(index);
 		    op.remove(index);
