@@ -54,6 +54,14 @@ public class DatabaseController
     public List<String> getFilteredList(List<String> column,
 	    List<String> op, List<String> term)
     {
+	/*
+	 *TODO:
+	 * 1. Implement OR and NOT 
+	 * 2. Implement Lightside and darkside
+	 * 3. Implement Remove
+	 */
+	
+	
 	String wherefilter = "";
 
 	if (column.size() != 0)
@@ -65,11 +73,16 @@ public class DatabaseController
 
 	    for (int index = 0; index < column.size(); index++)
 	    {
-		if (op.get(index).equals("LIKE"))
-		    term.set(index, "\'%" + term.get(index) + "%\'");
+		String t = "";
+		if(number(column.get(index)))
+		    t = term.get(index);
+		else if (op.get(index).equals("LIKE"))
+		    t = "\'%" + term.get(index) + "%\'";
+		else
+		    t = "\'" + term.get(index) + "\'";
 
 		search.add(" " + column.get(index) + " " + op.get(index) + " "
-			+ term.get(index) + " ");
+			+ t + " ");
 	    }
 
 	    for (int index = 0; index < search.size(); index++)
@@ -122,6 +135,24 @@ public class DatabaseController
 	return results;
     }
 
+    private boolean number(String selection)
+    {
+	if (selection.equals("Ability") || selection.equals("Armor")
+		|| selection.equals("Deploy Cost")
+		|| selection.equals("Destiny") || selection.equals("Ferocity")
+		|| selection.equals("Forfeit")
+		|| selection.equals("Hyperspeed")
+		|| selection.equals("Influence")
+		|| selection.equals("Landspeed")
+		|| selection.equals("Maneuver") || selection.equals("Politics")
+		|| selection.equals("Power")
+		|| selection.equals("Force Icons Dark Side")
+		|| selection.equals("Force Icons Light Side")
+		|| selection.equals("Parsec Number"))
+	    return true;
+	return false;
+    }
+    
     /**
      * This function is used to change the number in the users inventory of a
      * particular card.

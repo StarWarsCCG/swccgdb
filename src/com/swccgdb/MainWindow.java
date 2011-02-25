@@ -3,7 +3,9 @@ package com.swccgdb;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +15,8 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -28,7 +32,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -36,8 +39,6 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.JEditorPane;
-import javax.swing.DefaultComboBoxModel;
 
 public class MainWindow
 {
@@ -48,18 +49,29 @@ public class MainWindow
     private JTextField	 textField;
     private JTextField	 textFieldNickname;
     private JTextField	 textFieldCounterpart;
-
+    private JPanel	     panelCardList;
+    private JPanel	     panel_8;
+    private JRadioButton       rdbtnLightside;
+    private JRadioButton       rdbtnDarkSide;
     private DatabaseController dbc;
     private JList	      listCardList;
     private CardListModel      cardListModel;
+    private DefaultListModel   filterListModel;
     private JLabel	     lblNumCards;
     private JScrollPane	scrollPane;
+    private JScrollPane	scrollPaneFilter;
+    private JComboBox	  comboBoxFilter1;
+    private JComboBox	  comboBoxFilter2;
+    private JComboBox	  comboBoxFilter3;
+    private JList	      listFilterList;
 
     private Font	       stdFont;
     private Font	       bldFont;
 
     private Color	      editColor   = Color.RED;
     private Color	      stdColor    = UIManager.getColor("control");
+
+    private final List<String> column, op, term;
 
     /**
      * Launch the application.
@@ -90,8 +102,12 @@ public class MainWindow
     {
 	dbc = new DatabaseController();
 	cardListModel = new CardListModel(dbc.getCardNames(""));
+	filterListModel = new DefaultListModel();
 	stdFont = new Font("Tahoma", Font.PLAIN, 12);
 	bldFont = new Font("Tahoma", Font.BOLD, 12);
+	column = new ArrayList<String>();
+	op = new ArrayList<String>();
+	term = new ArrayList<String>();
 	initialize();
     }
 
@@ -167,100 +183,170 @@ public class MainWindow
 	JPanel panelFilter = new JPanel();
 	panelFilter.setBorder(new TitledBorder(null, "Filter",
 		TitledBorder.LEADING, TitledBorder.TOP, null, null));
-	panelFilter.setBounds(603, 28, 260, 203);
+	panelFilter.setBounds(603, 28, 285, 276);
 	frmswipStarWars.getContentPane().add(panelFilter);
 	panelFilter.setLayout(null);
 
-	JRadioButton rdbtnDarkSide = new JRadioButton("Dark Side");
+	rdbtnDarkSide = new JRadioButton("Dark Side");
+	rdbtnDarkSide.addActionListener(new ActionListener()
+	{
+	    public void actionPerformed(ActionEvent arg0)
+	    {
+		if (rdbtnDarkSide.isSelected())
+		{
+		    for (int i = 0; i < column.size(); i++)
+		    {
+			if(column.get(i).equals("Grouping") && term.get(i).equals("Dark"))
+			    return;
+			if (column.get(i).equals("Grouping")
+				&& term.get(i).equals("Light"))
+			{
+			    column.remove(i);
+			    op.remove(i);
+			    term.remove(i);
+			    break;
+			}
+		    }
+
+		    column.add("Grouping");
+		    op.add("=");
+		    term.add("Dark");
+
+		    populateFilters();
+		}
+	    }
+	});
 	buttonGroup.add(rdbtnDarkSide);
-	rdbtnDarkSide.setBounds(154, 17, 100, 23);
+	rdbtnDarkSide.setBounds(95, 17, 85, 23);
 	panelFilter.add(rdbtnDarkSide);
 
-	JRadioButton rdbtnLightside = new JRadioButton("Light Side");
+	rdbtnLightside = new JRadioButton("Light Side");
+	rdbtnLightside.addActionListener(new ActionListener()
+	{
+	    public void actionPerformed(ActionEvent arg0)
+	    {
+		if (rdbtnLightside.isSelected())
+		{
+		    for (int i = 0; i < column.size(); i++)
+		    {
+			if(column.get(i).equals("Grouping") && term.get(i).equals("Light"))
+			    return;
+			if (column.get(i).equals("Grouping")
+				&& term.get(i).equals("Dark"))
+			{
+			    column.remove(i);
+			    op.remove(i);
+			    term.remove(i);
+			}
+		    }
+
+		    column.add("Grouping");
+		    op.add("=");
+		    term.add("Light");
+
+		    populateFilters();
+		}
+	    }
+	});
 	buttonGroup.add(rdbtnLightside);
-	rdbtnLightside.setBounds(154, 43, 100, 23);
+	rdbtnLightside.setBounds(6, 17, 85, 23);
 	panelFilter.add(rdbtnLightside);
+
+	panel_8 = new JPanel();
+	panel_8.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null,
+		null, null));
+	panel_8.setBounds(6, 172, 176, 91);
+	panelFilter.add(panel_8);
+	panel_8.setLayout(null);
+
+	scrollPaneFilter = new JScrollPane();
+	scrollPaneFilter.setBounds(2, 2, 172, 87);
+	panel_8.add(scrollPaneFilter);
+
+	listFilterList = new JList();
+	listFilterList.setFont(stdFont);
+	listFilterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	listFilterList.setModel(filterListModel);
+	listFilterList.setVisibleRowCount(10);
+	scrollPaneFilter.setViewportView(listFilterList);
 
 	JButton btnFilter = new JButton("Filter");
 	btnFilter.addActionListener(new ActionListener()
 	{
 	    public void actionPerformed(ActionEvent arg0)
 	    {
-		// TODO: enter this information
-		List<String> one = new ArrayList<String>();
-		List<String> two = new ArrayList<String>();
-		List<String> three = new ArrayList<String>();
-		one.add("cardname");
-		two.add("LIKE");
-		three.add("luke");
-		updateCardList(dbc.getFilteredList(one, two, three));
+		updateFilterList();
+		clearFilters();
+		listCardList.requestFocusInWindow();
 	    }
 	});
-	btnFilter.setBounds(154, 69, 100, 29);
+	btnFilter.setBounds(194, 126, 79, 29);
 	panelFilter.add(btnFilter);
 
-	JComboBox comboBoxFilter1 = new JComboBox();
-	comboBoxFilter1.setFont(stdFont);
-	comboBoxFilter1.setModel(new DefaultComboBoxModel(new String[] {
-		"[Select One]", "Ability", "Armor", "Card Name", "Card Type",
-		"Characteristics, Attributes, etc.", "Deploy Cost", "Destiny",
-		"Expansion", "Ferocity", "Force Aptitude", "Forfeit",
-		"Game Text", "Hyperspeed", "Icons", "Influence", "Landspeed",
-		"Lore", "Maneuver", "Model Type", "Politics", "Power",
-		"Rarity", "Subtype", "Uniqueness", "", "Force Icons Dark Side",
-		"Force Icons Light Side", "Parsec Number", "",
-		"Abbreviation / Nickname", "Pulls", "Is Pulled", "Cancels",
-		"Is Canceled By", "Combo", "Information", "Rules", "Errata",
-		"", "Inventory", "Needs" }));
-	comboBoxFilter1.setBounds(6, 16, 136, 24);
-	panelFilter.add(comboBoxFilter1);
+	scrollPaneFilter = new JScrollPane();
 
-	JComboBox comboBoxFilter2 = new JComboBox();
-	comboBoxFilter2.setFont(stdFont);
-	comboBoxFilter2.setBounds(6, 42, 136, 24);
-	panelFilter.add(comboBoxFilter2);
-
-	JComboBox comboBoxFilter3 = new JComboBox();
-	comboBoxFilter3.setFont(stdFont);
-	comboBoxFilter3.setBounds(6, 69, 136, 29);
-	panelFilter.add(comboBoxFilter3);
-
-	JPanel panel_8 = new JPanel();
-	panel_8.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null,
-		null, null));
-	panel_8.setBounds(6, 102, 136, 91);
-	panelFilter.add(panel_8);
-	panel_8.setLayout(new BorderLayout(0, 0));
-
-	JList listFilterList = new JList();
-	listFilterList.setFont(stdFont);
-	listFilterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	panel_8.add(listFilterList, BorderLayout.CENTER);
-
-	JButton btnRemove = new JButton("Remove");
-	btnRemove.setEnabled(false);
-	btnRemove.setBounds(154, 132, 100, 29);
-	panelFilter.add(btnRemove);
-
-	JButton btnClearFilter = new JButton("Clear Filter");
-	btnClearFilter.addActionListener(new ActionListener()
+	comboBoxFilter1 = new JComboBox();
+	comboBoxFilter1.addActionListener(new ActionListener()
 	{
 	    public void actionPerformed(ActionEvent arg0)
 	    {
-		updateCardList(dbc.getCardNames(""));
+		String selection = (String) comboBoxFilter1.getSelectedItem();
+		if (blank(selection))
+		    clearFilters();
+		else if (number(selection))
+		    numberFilters();
+		else
+		    wordFilters();
 	    }
 	});
-	btnClearFilter.setBounds(154, 164, 100, 29);
-	panelFilter.add(btnClearFilter);
+	comboBoxFilter1.setFont(stdFont);
+	setComboFilter1Model();
+	comboBoxFilter1.setBounds(6, 52, 176, 24);
+	panelFilter.add(comboBoxFilter1);
+
+	comboBoxFilter2 = new JComboBox();
+	comboBoxFilter2.setModel(new DefaultComboBoxModel(new String[] {}));
+	comboBoxFilter2.setFont(stdFont);
+	comboBoxFilter2.setBounds(6, 89, 176, 24);
+	panelFilter.add(comboBoxFilter2);
+
+	comboBoxFilter3 = new JComboBox();
+	comboBoxFilter3.setFont(stdFont);
+	comboBoxFilter3.setBounds(6, 126, 176, 29);
+	panelFilter.add(comboBoxFilter3);
+
+	JButton btnRemove = new JButton("Remove");
+	btnRemove.addActionListener(new ActionListener()
+	{
+	    public void actionPerformed(ActionEvent arg0)
+	    {
+		int index = listFilterList.getSelectedIndex(); 
+		if(index >= 0)
+		{
+		    if(column.get(index).equals("Grouping") && term.get(index).equals("Light"))
+			buttonGroup.clearSelection();
+		    if(column.get(index).equals("Grouping") && term.get(index).equals("Dark"))
+			buttonGroup.clearSelection();
+		    column.remove(index);
+		    op.remove(index);
+		    term.remove(index);
+		    populateFilters();
+		}
+	    }
+	});
+	btnRemove.setFont(new Font("Tahoma", Font.PLAIN, 12));
+	btnRemove.setBounds(194, 192, 79, 29);
+	panelFilter.add(btnRemove);
 
 	JPanel panelInventory = new JPanel();
 	panelInventory.setBorder(new TitledBorder(null, "Cards",
 		TitledBorder.LEADING, TitledBorder.TOP, null, null));
-	panelInventory.setBounds(875, 28, 87, 134);
+	panelInventory.setBounds(894, 28, 87, 134);
 	frmswipStarWars.getContentPane().add(panelInventory);
 	panelInventory.setLayout(null);
 
 	textFieldInventory = new JTextField();
+	textFieldInventory.setHorizontalAlignment(SwingConstants.CENTER);
 	textFieldInventory.setEditable(false);
 	textFieldInventory.setText("0");
 	textFieldInventory.setBounds(6, 34, 34, 28);
@@ -276,6 +362,7 @@ public class MainWindow
 	panelInventory.add(lblNeeds);
 
 	textField = new JTextField();
+	textField.setHorizontalAlignment(SwingConstants.CENTER);
 	textField.setEditable(false);
 	textField.setText("0");
 	textField.setBounds(6, 83, 34, 28);
@@ -283,13 +370,15 @@ public class MainWindow
 	textField.setColumns(10);
 
 	JPanel panelViewInfo = new JPanel();
-	panelViewInfo.setBorder(new TitledBorder(null, "View Information",
-		TitledBorder.LEADING, TitledBorder.TOP, null, null));
-	panelViewInfo.setBounds(603, 243, 133, 61);
+	panelViewInfo.setBorder(new TitledBorder(UIManager
+		.getBorder("TitledBorder.border"), "Information",
+		TitledBorder.LEADING, TitledBorder.TOP, null,
+		new Color(0, 0, 0)));
+	panelViewInfo.setBounds(901, 175, 87, 61);
 	frmswipStarWars.getContentPane().add(panelViewInfo);
 	panelViewInfo.setLayout(new BorderLayout(0, 0));
 
-	JCheckBox chckbxChangeView = new JCheckBox("Change View");
+	JCheckBox chckbxChangeView = new JCheckBox("View");
 	chckbxChangeView.setEnabled(false);
 	chckbxChangeView.setSelected(true);
 	panelViewInfo.add(chckbxChangeView);
@@ -529,7 +618,7 @@ public class MainWindow
 	JPanel panel_7 = new JPanel();
 	panel_7.setBorder(new TitledBorder(null, "Edit Fields",
 		TitledBorder.LEADING, TitledBorder.TOP, null, null));
-	panel_7.setBounds(748, 244, 123, 61);
+	panel_7.setBounds(901, 243, 87, 61);
 	frmswipStarWars.getContentPane().add(panel_7);
 	panel_7.setLayout(new BorderLayout(0, 0));
 
@@ -543,7 +632,7 @@ public class MainWindow
 	btnRemoveCard.setBounds(76, 4, 41, 21);
 	frmswipStarWars.getContentPane().add(btnRemoveCard);
 
-	final JCheckBox chckbxFieldsEditable = new JCheckBox("Fields Editable");
+	final JCheckBox chckbxFieldsEditable = new JCheckBox("Edit");
 	chckbxFieldsEditable.setEnabled(false);
 	chckbxFieldsEditable.addActionListener(new ActionListener()
 	{
@@ -646,9 +735,18 @@ public class MainWindow
 	});
 	panel_7.add(chckbxFieldsEditable, BorderLayout.CENTER);
 
+	panelCardList = new JPanel();
+	panelCardList.setBorder(new BevelBorder(BevelBorder.LOWERED, null,
+		null, null, null));
+	panelCardList.setBounds(10, 28, 284, 276);
+	frmswipStarWars.getContentPane().add(panelCardList);
+	panelCardList.setLayout(null);
+
 	scrollPane = new JScrollPane();
-	scrollPane.setBounds(10, 28, 284, 276);
-	frmswipStarWars.getContentPane().add(scrollPane);
+	scrollPane.setViewportBorder(new BevelBorder(BevelBorder.LOWERED, null,
+		null, null, null));
+	scrollPane.setBounds(0, 0, 284, 276);
+	panelCardList.add(scrollPane);
 
 	listCardList = new JList();
 	listCardList.setFont(stdFont);
@@ -698,24 +796,177 @@ public class MainWindow
 	listCardList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	listCardList.setModel(cardListModel);
 	this.lblNumCards.setText(cardListModel.getSize() + " Cards");
+
+	JButton btnClearFilter = new JButton("Clear");
+	btnClearFilter.addActionListener(new ActionListener()
+	{
+	    public void actionPerformed(ActionEvent arg0)
+	    {
+		filterListModel.clear();
+		rdbtnLightside.setSelected(false);
+		rdbtnDarkSide.setSelected(false);
+		column.clear();
+		op.clear();
+		term.clear();
+		updateCardList(dbc.getCardNames(""));
+		buttonGroup.clearSelection();
+	    }
+	});
+	btnClearFilter.setBounds(194, 234, 79, 29);
+	panelFilter.add(btnClearFilter);
+
+	JPanel panel = new JPanel();
+	panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null,
+		null));
+	panel.setBounds(194, 44, 79, 69);
+	panelFilter.add(panel);
+	panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+	JCheckBox chckbxOr = new JCheckBox("OR  ");
+	chckbxOr.setEnabled(false);
+	panel.add(chckbxOr);
+
+	JCheckBox chckbxNot = new JCheckBox("NOT");
+	chckbxNot.setEnabled(false);
+	panel.add(chckbxNot);
+
+    }
+
+    private void setComboFilter1Model()
+    {
+	comboBoxFilter1.setModel(new DefaultComboBoxModel(new String[] {
+		"[Select One]", "Ability", "Armor", "Card Name", "Card Type",
+		"Characteristics, Attributes, etc.", "Deploy Cost", "Destiny",
+		"Expansion", "Ferocity", "Force Aptitude", "Forfeit",
+		"Game Text", "Hyperspeed", "Icons", "Influence", "Landspeed",
+		"Lore", "Maneuver", "Model Type", "Politics", "Power",
+		"Rarity", "Subtype", "Uniqueness", "", "Force Icons Dark Side",
+		"Force Icons Light Side", "Parsec Number", "",
+		"Abbreviation / Nickname", "Pulls", "Is Pulled", "Cancels",
+		"Is Canceled By", "Combo", "Information", "Rules", "Errata",
+		"", "Inventory", "Needs" }));
+    }
+
+    private boolean blank(String selection)
+    {
+	if (selection.equals("") || selection.equals("[Select One]"))
+	    return true;
+	return false;
+    }
+
+    private boolean number(String selection)
+    {
+	if (selection.equals("Ability") || selection.equals("Armor")
+		|| selection.equals("Deploy Cost")
+		|| selection.equals("Destiny") || selection.equals("Ferocity")
+		|| selection.equals("Forfeit")
+		|| selection.equals("Hyperspeed")
+		|| selection.equals("Influence")
+		|| selection.equals("Landspeed")
+		|| selection.equals("Maneuver") || selection.equals("Politics")
+		|| selection.equals("Power")
+		|| selection.equals("Force Icons Dark Side")
+		|| selection.equals("Force Icons Light Side")
+		|| selection.equals("Parsec Number"))
+	    return true;
+	return false;
+    }
+
+    private void wordFilters()
+    {
+	comboBoxFilter2.setModel(new DefaultComboBoxModel(
+		new String[] { "Contains" }));
+	comboBoxFilter3.setEditable(true);
+	comboBoxFilter3.requestFocusInWindow();
+    }
+
+    private void numberFilters()
+    {
+	comboBoxFilter2.setModel(new DefaultComboBoxModel(new String[] { "=",
+		"<", "<=", ">", ">=", "<>" }));
+	comboBoxFilter3.setEditable(true);
+	comboBoxFilter3.requestFocusInWindow();
+    }
+
+    private void clearFilters()
+    {
+	comboBoxFilter1.setSelectedIndex(0);
+	comboBoxFilter2.setModel(new DefaultComboBoxModel(new String[] { "" }));
+	comboBoxFilter3.setModel(new DefaultComboBoxModel(new String[] { "" }));
+	comboBoxFilter3.setEditable(false);
+    }
+
+    private void updateFilterList()
+    {
+	Object selection = comboBoxFilter3.getSelectedItem();
+	if (selection == null)
+	    return;
+
+	if (!comboBoxFilter3.getSelectedItem().equals(""))
+	{
+	    column.add((String) comboBoxFilter1.getSelectedItem());
+	    op.add((String) comboBoxFilter2.getSelectedItem());
+	    term.add((String) comboBoxFilter3.getSelectedItem());
+
+	    populateFilters();
+	}
+	/*
+	 * List<String> one = new ArrayList<String>(); List<String> two = new
+	 * ArrayList<String>(); List<String> three = new ArrayList<String>();
+	 * one.add("cardname"); two.add("LIKE"); three.add("luke");
+	 * updateCardList(dbc.getFilteredList(one, two, three));
+	 */
     }
 
     private void updateCardList(List<String> cardnames)
     {
 	cardListModel.updateModel(cardnames);
-	listCardList.repaint();
-	this.lblNumCards.setText("Cards: " + cardnames.size());
-	scrollPane.repaint();
 	listCardList.setSelectedIndex(0);
-	
+	scrollPane.repaint();
+	scrollPane.revalidate();
+	scrollPane.getViewport().setViewPosition(new Point(10, 10));
+	scrollPane.getViewport().setViewPosition(new Point(0, 0));
+	this.lblNumCards.setText("Cards: " + cardnames.size());
+    }
+
+    private void populateFilters()
+    {
+	filterListModel.clear();
+
+	for (int i = 0; i < column.size(); i++)
+	{
+	    filterListModel.addElement(column.get(i) + " " + op.get(i) + " "
+		    + term.get(i));
+	}
+
+	listFilterList.setSelectedIndex(0);
+	scrollPaneFilter.repaint();
+	scrollPaneFilter.revalidate();
+	scrollPaneFilter.getViewport().setViewPosition(new Point(10, 10));
+	scrollPaneFilter.getViewport().setViewPosition(new Point(0, 0));
+
+	updateCardList(dbc.getFilteredList(column, op, term));
     }
 }
 
+/*
+ * @SuppressWarnings("serial") class FilterListModel extends DefaultListModel {
+ * List<String> values;
+ * 
+ * FilterListModel() { values = new ArrayList<String>(); }
+ * 
+ * public int getSize() { return values.size(); }
+ * 
+ * public String getElementAt(int index) { return values.get(index); }
+ * 
+ * public void add(String value) { values.add(value); }
+ * 
+ * public Object remove(int index) { values.remove(index); return index; } }
+ */
 @SuppressWarnings("serial")
 class CardListModel extends AbstractListModel
 {
-    List<String>       values = new ArrayList<String>();
-    DatabaseController dbc;
+    List<String> values = new ArrayList<String>();
 
     CardListModel(List<String> list)
     {
@@ -746,3 +997,14 @@ class CardListModel extends AbstractListModel
 	return getSize();
     }
 }
+
+/*
+ * , "Ability", "Armor", "Card Name", "Card Type",
+ * "Characteristics, Attributes, etc.", "Deploy Cost", "Destiny", "Expansion",
+ * "Ferocity", "Force Aptitude", "Forfeit", "Game Text", "Hyperspeed", "Icons",
+ * "Influence", "Landspeed", "Lore", "Maneuver", "Model Type", "Politics",
+ * "Power", "Rarity", "Subtype", "Uniqueness", "", "Force Icons Dark Side",
+ * "Force Icons Light Side", "Parsec Number", "", "Abbreviation / Nickname",
+ * "Pulls", "Is Pulled", "Cancels", "Is Canceled By", "Combo", "Information",
+ * "Rules", "Errata", "", "Inventory", "Needs"
+ */
